@@ -190,7 +190,7 @@ if no_weed_adjacent==0
         if i/100000==floor(i/100000)
             logit([num2str(i),' PS processed'],2)
             save log step_name i
-            !sync
+            sp_sync();
         end
     end
     
@@ -207,7 +207,7 @@ if no_weed_adjacent==0
         if i/100000==floor(i/100000)
             logit([num2str(i),' PS processed'],2)
             save log step_name i
-            !sync
+            sp_sync();
         end
 
     end	
@@ -237,7 +237,7 @@ if no_weed_adjacent==0
         if i/100000==floor(i/100000)
             logit([num2str(i),' PS processed'],2)
             save log step_name i
-            !sync
+            sp_sync();
         end
 	
 	end
@@ -294,12 +294,12 @@ if n_ps~=0
         if strcmpi(arch(1:3),'win')
             use_triangle='n';
         else
-            tripath=system('which triangle >& /dev/null');
-            if tripath==0
+            tripath=sp_which('triangle');
+            if ~isempty(tripath)
                 use_triangle='y';
             else
                 use_triangle='n';
-            end  
+            end
         end
         
         if use_triangle=='y'
@@ -313,7 +313,7 @@ if n_ps~=0
 
             fclose(fid);
   
-            system('triangle -e psweed.1.node > triangle_weed.log');
+            sp_system('triangle -e psweed.1.node > triangle_weed.log');
 
             fid=fopen('psweed.2.edge','r');
             header=str2num(fgetl(fid));

@@ -84,7 +84,7 @@ n_image=n_ifg;
 if ~exist(headingname,'file')
     headingname= ['../',headingname];
 end
-heading=load(headingname);
+heading=sp_read_numeric(headingname);
 if isempty(heading)
     error('heading.1.in is empty')
 end
@@ -93,7 +93,7 @@ setparm('heading',heading,1);
 if ~exist(lambdaname,'file')
     lambdaname= ['../',lambdaname];
 end
-lambda=load(lambdaname);
+lambda=sp_read_numeric(lambdaname);
 setparm('lambda',lambda,1);
 
 if ~exist(slc_osfname,'file')
@@ -141,7 +141,7 @@ fid=fopen(phname,'r');
 ph=zeros(n_ps,n_ifg-1,'single');
 byte_count=n_ps*2;
 for i=1:n_ifg-1
-    [ph_bit,byte_count]=fread(fid,[(n_ps)*2,1],'float');
+    [ph_bit,byte_count]=fread(fid,[(n_ps)*2,1],'float',0,'ieee-le');
     ph_bit=single(ph_bit);
     ph(:,i)=complex(ph_bit(1:2:end),ph_bit(2:2:end));
 end
@@ -153,7 +153,7 @@ ph=ph./repmat(calconst',n_ps,1);  % scale amplitudes
 ph=[ph(:,1:master_ix-1),ones(n_ps,1),ph(:,master_ix:end)]; % insert zero phase master-master ifg
 
 fid=fopen(llname,'r');
-lonlat=fread(fid,[2,inf],'float');
+lonlat=fread(fid,[2,inf],'float',0,'ieee-le');
 lonlat=lonlat';
 fclose(fid);
 
@@ -214,7 +214,7 @@ end
 
 if exist(hgtname,'file')
     fid=fopen(hgtname,'r');
-    hgt=fread(fid,[1,inf],'float');
+    hgt=fread(fid,[1,inf],'float',0,'ieee-le');
     hgt=hgt';
     hgt=hgt(sort_ix);
     fclose(fid);
@@ -226,7 +226,7 @@ end
 if ~exist(widthname,'file')
     widthname= ['../',widthname];
 end
-width=load(widthname);
+width=sp_read_numeric(widthname);
 
 if ~exist(lenname,'file')
     lenname= ['../',lenname];

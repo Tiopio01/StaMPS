@@ -18,12 +18,12 @@ arch=computer('arch');
 if strcmpi(arch(1:3),'win')
     use_triangle='n';
 else
-    tripath=system('which triangle >& /dev/null');
-    if tripath==0
+    tripath=sp_which('triangle');
+    if ~isempty(tripath)
         use_triangle='y';
     else
         use_triangle='n';
-    end  
+    end
 end
     
 [y,x]=find(uw.nzix);
@@ -37,7 +37,7 @@ if use_triangle=='y'
     fprintf(fid,'%d %d %d\n',xy');
     fclose(fid);
 
-    [a,b] = system('triangle -e unwrap.1.node > triangle.log');
+    [a,b] = sp_system('triangle -e unwrap.1.node > triangle.log');
 
     fid=fopen('unwrap.2.edge','r');
     header=str2num(fgetl(fid));

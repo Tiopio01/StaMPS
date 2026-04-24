@@ -1,0 +1,111 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stamps"
+version = "0.0.0"
+description = "StaMPS Python port (internal)"
+requires-python = ">=3.11"
+license = {text = "GPL-3.0-or-later"}
+readme = "README.md"
+authors = [
+    {name = "Andy Hooper"},
+    {name = "StaMPS contributors"},
+]
+maintainers = [
+    {name = "PHASE team", email = "samuel.bianchi193@gmail.com"},
+]
+keywords = ["insar", "interferometry", "stamps", "persistent-scatterers", "sar"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+
+[project.urls]
+Homepage = "https://github.com/pyccino/StaMPS"
+Documentation = "https://github.com/pyccino/StaMPS/blob/windows-port/main/README.md"
+Repository = "https://github.com/pyccino/StaMPS"
+Issues = "https://github.com/pyccino/StaMPS/issues"
+Changelog = "https://github.com/pyccino/StaMPS/blob/windows-port/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7",
+    "hypothesis>=6",
+    "numpy>=1.24",       # ulp-tolerant golden comparisons (Task 2c.3)
+    "pytest-timeout>=2.3.0", # hard per-test timeout offsets Hypothesis deadline=None
+    "build==1.2.2",      # wheel-build smoke test (tests/test_wheel_metadata.py)
+]
+
+# Package discovery: the `stamps` package lives at python/stamps/, not at
+# the default `./stamps/` or `src/stamps/`. Tell setuptools where to look.
+[tool.setuptools]
+package-dir = {"" = "python"}
+
+[tool.setuptools.packages.find]
+where = ["python"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+pythonpath = ["python"]
+addopts = "-ra -q --strict-markers --timeout=120"
+markers = [
+    "nightly: slow end-to-end tests (>5 min)",
+    "slow: slower tests (tens of seconds to minutes) — e.g. external builds",
+    "linux_only: tests that only run on Linux",
+    "windows_only: tests that only run on Windows",
+    "windows_mingw: tests that require MinGW-w64 build on Windows",
+    "requires_tcsh: tests that need tcsh installed",
+    "requires_matlab: tests that need a MATLAB license",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+# Legacy upstream Python 2 scripts under bin/ (tsx_dump_heading etc.)
+# pre-date the port and aren't in scope for lint/format. Also exclude
+# upstream DORIS/GAMMA/ERS scripts under bin/ that aren't Python at all
+# but have extension-less names — ruff tries to parse them otherwise.
+extend-exclude = ["bin/", "Manual/", "DORIS_SCR/"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "I", "UP"]
+ignore = ["E501"]   # line length handled by formatter
+
+[tool.mypy]
+python_version = "3.11"
+# Strict on the surface API; modules added incrementally below as their
+# annotations land. This avoids a 100-error first-run wall when CI starts
+# enforcing the hook.
+files = ["python/stamps"]
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+
+# Modules with full annotations enable strict mode individually:
+[[tool.mypy.overrides]]
+module = ["stamps._shell", "stamps._paths", "stamps._matlab"]
+strict = true
+
+# Test code can be looser — pytest fixtures are duck-typed.
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+ignore_missing_imports = true
+
+# Third-party packages without stubs.
+[[tool.mypy.overrides]]
+module = ["scipy.*", "scipy.io"]
+ignore_missing_imports = true

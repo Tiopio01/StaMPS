@@ -1,3 +1,7 @@
+# DEPRECATED: This Makefile is retained only for backward compatibility.
+# The authoritative build system is CMakeLists.txt in this directory.
+# Run `cmake -B build && cmake --build build` instead of `make`.
+#
 #################################################################
 # "make [all]"		all exe's				#
 # "make prog.o"		compile only prog.o			#
@@ -18,7 +22,7 @@
 XLIBS = -L/usr/X11R6/lib -lXm -lXt -lX11 -lXp -lXext
 XINCS = -I/usr/X11R6/include
 
-### X11 libraries for Mac OS X Tiger or Leopard with IST-Inc 
+### X11 libraries for Mac OS X Tiger or Leopard with IST-Inc
 ### OpenMotif (/usr/OpenMotif)
 ### IST-INC: http://www.ist-inc.com/DOWNLOADS/motif_download.html
 #XLIBS = -L/usr/X11R6/lib -lX11 -L/usr/OpenMotif/lib -lXm -lXt -lXp -lXext
@@ -33,7 +37,7 @@ XINCS = -I/usr/X11R6/include
 ### The shell we're using ###
 SHELL	=	/bin/sh
 
-### Install directory 
+### Install directory
 INSTALL_DIR =	../bin
 
 ### compiler
@@ -54,10 +58,10 @@ PROGS	=	calamp \
 		cpxsum \
 		pscphase \
 		psclonlat \
-		pscdem 
+		pscdem
 
 # usedin install:
-SCRIPTS =	
+SCRIPTS =
 
 ### Compilation
 default:	all
@@ -85,12 +89,12 @@ pscdem:		pscdem.o
 		$(CC) $(CFLAGS) $@.o -o $@
 dismph:		dismph.o XInfo.o CDisp.o CGetData.o CDispComp.o bytescale.o
 		$(CC) $(CFLAGS) $? -o $@ ${XLIBS}
-.cpp.o: 
+.cpp.o:
 	 	${CC} -c ${XINCS} $*.cpp
 
 ### Install in INSTALL_DIR by linking/copying executables ###
 install:	$(PROGS)
-		$(MAKE) definstall; 
+		$(MAKE) definstall;
 
 
 ### Use symbolic links at our system, copy to /usr/local/bin on other.
@@ -106,7 +110,7 @@ definstall:	$(PROGS)
 		$(MAKE) cleaner
 
 ### Helpers ###
-clean:	
+clean:
 		@rm -f *.o *dummy* *.bak
 		@echo "* Removed junk."
 ### some reason under cygwin progs are not removed without ".exe"???
@@ -120,9 +124,4 @@ uninstall:	cleaner
 		  cd $(INSTALL_DIR); rm -f $(PROGS) $(CYGWIN_EXE); \
 		  echo "* Removed executables in install dir: $(INSTALL_DIR)."; fi;
 
-### How to make object files ###
-.cc.o:		
-	$(CC) $(CFLAGS) -c -o $(@) $<
-
 ### EOF.
-

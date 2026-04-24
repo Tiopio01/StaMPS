@@ -1,0 +1,68 @@
+# Python bytecode + caches
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+# C++ object files + in-tree binaries produced by legacy `make` (src/Makefile)
+src/*.o
+src/calamp
+src/cpxsum
+src/pscphase
+src/pscdem
+src/psclonlat
+src/selpsc_patch
+src/selsbc_patch
+src/dismph
+# Same binaries sometimes installed in-place by the old Makefile's
+# `make install` target (copies src/* into bin/*). Tracked shims in bin/
+# (mt_prep_snap, mt_extract_cands, their .bat counterparts, legacy-csh/)
+# are committed via explicit allow-list below.
+bin/calamp
+bin/cpxsum
+bin/pscphase
+bin/pscdem
+bin/psclonlat
+bin/selpsc_patch
+bin/selsbc_patch
+bin/dismph
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated synthetic SAR fixtures (produced by tests/fixtures/generate_fixtures.py).
+# The generator is committed; its deterministic output is not.
+tests/fixtures/synthetic_ps/
+tests/fixtures/synthetic_sb/
+# --small variants (20x20) built on-demand by the session-scope autouse
+# conftest fixture _ensure_synthetic_small_fixture; consumed by nightly E2E
+# + PHASE→StaMPS integration tests.
+tests/fixtures/synthetic_ps_small/
+tests/fixtures/synthetic_sb_small/
+
+# MATLAB test fixture: ~3 MB, produced by
+# tests/matlab/fixtures/generate_ps_weed_large.m. The generator is
+# committed; its deterministic output is not.
+tests/matlab/fixtures/ps_weed_large.mat
+
+# Third-party components installed via ExternalProject_Add. The CMakeLists.txt
+# + LICENSE + patches in external/<name>/ are tracked; the fetched source
+# tree, build outputs, and installed binaries are not.
+external/snaphu/bin/
+external/snaphu/README
+external/triangle/bin/
+external/triangle/lib/
+external/triangle/include/
